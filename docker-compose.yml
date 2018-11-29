@@ -1,0 +1,48 @@
+version: '2'
+services:
+  smart-container-management.api:
+    container_name: rent-agregator
+    build: .
+    ports:
+      - 8080:8080
+      - 5005:5005
+    volumes:
+      - ~/.m2/repository:/rent-agregator/repo
+    environment:
+      DB_HOST: mysql
+      DB_NAME: rent-agregator
+      SPRING_CLOUD_CONSUL_ENABLED: 'true'
+      SPRING_CLOUD_CONSUL_HOST: rent-agregator.consul
+      SPRING_CLOUD_CONSUL_PORT: 8500
+      LOGGING_LEVEL_ROOT: warn
+      LOGGING_LEVEL_IO_AIBUY: info
+      JAVA_OPTS: -Xms128m
+        -Xmx512m
+        -XX:MaxMetaspaceSize=128m
+        -XX:SurvivorRatio=2
+        -XX:+UseConcMarkSweepGC
+        -XX:+CMSParallelRemarkEnabled
+        -XX:+UseCMSInitiatingOccupancyOnly
+        -XX:+ScavengeBeforeFullGC
+        -XX:+CMSScavengeBeforeRemark
+        -Dsun.net.inetaddr.ttl=5
+        -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector
+        -Djavax.servlet.request.encoding=UTF-8
+        -Dfile.encoding=UTF-8
+  smart-container-management.consul:
+    container_name: rent-agregator.consul
+    image: consul
+    ports:
+      - 8500:8500
+    command: "consul agent -server -bootstrap -node content-api.consul -log-level=err -ui -client 0.0.0.0 -data-dir=/consul/data"
+
+  mysql:
+    container_name: myslq
+    image: mysql:5
+    ports:
+      - 3307:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=developer
+      - MYSQL_PASSWORD=developer
+      - MYSQL_DATABASE=ecommerce
