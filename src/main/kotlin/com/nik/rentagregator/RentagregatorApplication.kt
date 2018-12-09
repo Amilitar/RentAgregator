@@ -1,12 +1,11 @@
 package com.nik.rentagregator
 
-import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-
+import org.springframework.boot.runApplication
 
 @SpringBootApplication
-open class Starter
+class RentagregatorApplication
 
 fun main(args: Array<String>) {
-    SpringApplication.run(Starter::class.java, *args)
+    runApplication<RentagregatorApplication>(*args)
 }
